@@ -1,0 +1,15 @@
+<ul>
+    {{#each events as |event|}}
+        {{#link-to 'event-details' event.slug}}
+            <div class="media">
+                <div class="media-left">
+                    <img class="media-object mo-image" src="{{event.image}}" alt="{{event.title}}">
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading" style={{event.titleStyles}}>{{event.title}}</h4>
+                    {{event.shortDescription}}
+                </div>
+            </div>
+        {{/link-to}}
+    {{/each}}
+</ul>
