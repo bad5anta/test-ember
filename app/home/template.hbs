@@ -25,6 +25,10 @@
             {{/each}}
         </div>
         <div class="col-xs-4">
+            <div class="weather">
+                <div class="city h3">Kiev, {{weatherForToday.temperature}}°C</div>
+                <div class="summary h5">{{weatherForToday.summary}}</div>
+            </div>
             <div class="form-group">
                 {{input value=searchQuery keyUp=(action 'searchKeyUp') class="form-control"}}
             </div>

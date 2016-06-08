@@ -4,6 +4,8 @@ export default Ember.Controller.extend({
     eventBus: Ember.inject.service(),
     events: null,
     searchQuery: '',
+    weather: Ember.inject.service(),
+    weatherForToday: null,
     eventsFiltered: Ember.computed('events', 'activeCategories.[]', function () {
         let events = this.get('events');
         let activeCategories = this.get('activeCategories');
@@ -26,6 +28,12 @@ export default Ember.Controller.extend({
         this._super(...arguments);
         let eventBus = this.get('eventBus');
         eventBus.subscribe('eventFormOff', this, 'newEventRollback');
+        this.get('weather').getWeather().then(data => {
+            this.set('weatherForToday', {
+                temperature: Math.round((data.currently.temperature - 32)*5/9),
+                summary: data.currently.summary
+            });
+        });
     },
     newEventRollback () {
         let newEvent = this.get('store').createRecord('event');
@@ -38,11 +46,14 @@ export default Ember.Controller.extend({
         addEvent () {
             let newEvent = this.get('newEvent');
             newEvent.validate().then(() => {
-                newEvent.save().then(() => {
+                newEvent.save().then(data => {
+                    let events = this.get('events').toArray();
+                    events.addObject(data);
+                    this.set('events', events);
+
                     this.get('eventBus').publish('eventFormOff');
                 });
             }).catch(e => {
-                console.log(e);
                 newEvent.set('validationErrors', e);
             });
         },

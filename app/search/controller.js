@@ -5,7 +5,7 @@ export default Ember.Controller.extend({
     groupedEvents: Ember.computed('events', function () {
         let events = this.get('events');
         let obj = {};
-        let result = [];
+        let result = Ember.A([]);
         events.forEach(e => {
             let date = e.get('date');
             let month = date.split('-')[1];
@@ -20,6 +20,6 @@ export default Ember.Controller.extend({
                 events: Ember.get(obj, z)
             });
         }
-        return result;
+        return result.sortBy('month');
     })
 });

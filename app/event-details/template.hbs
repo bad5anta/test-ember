@@ -1,10 +1,26 @@
-<h1 class="text-center">{{model.title}}</h1>
+<div class="container">
+    <h1 class="text-center">{{model.title}}</h1>
 
-<dl>
-    <dd>Category</dd><dt style={{model.titleStyles}}>{{model.category.title}}</dt>
-    <dd>Date</dd><dt>{{model.date}}</dt>
-</dl>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="row details-image">
+                <div class="col-xs-offset-4 col-xs-4">
+                    <img src={{model.image}} alt="" class="img-responsive">
+                </div>
+            </div>
 
-<div class="content">
-    {{model.description}}
+            <dl class="dl-horizontal">
+                <dt>Category</dt>
+                <dd style={{model.category.titleStyles}}>{{model.category.title}}</dd>
+                <dt>Date</dt>
+                <dd>{{model.date}}</dd>
+                <dt>Weather</dt>
+                <dd>{{weatherForTheDay.summary}}, {{weatherForTheDay.temperature}}°C</dd>
+            </dl>
+
+            <div class="content">
+                {{model.description}}
+            </div>
+        </div>
+    </div>
 </div>
