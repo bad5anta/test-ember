@@ -1,0 +1,6 @@
+<select class="form-control" onchange={{action 'changeActionTrigger' value="target.value"}}>
+    <option value selected={{unless value 'selected'}}>{{prompt}}</option>
+    {{#each content as |item|}}
+        <option value={{get item optionValuePath}} selected={{eq (get item optionValuePath) value}}>{{get item optionLabelPath}}</option>
+    {{/each}}
+</select>

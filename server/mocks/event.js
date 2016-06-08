@@ -8,51 +8,66 @@ Date.prototype.yyyymmdd = function () {
 module.exports = function (app) {
     var express = require('express');
     var faker = require('Faker');
+    var bodyParser = require('body-parser');
     var eventRouter = express.Router();
     var events = [];
+    var i = 1;
+    app.use(bodyParser.json()); // for parsing application/json
 
-    for (var i = 1; i <= 10; i++) {
+    for (i; i <= 10; i++) {
         events.push({
             id: i,
             title: faker.Lorem.sentence(5),
             description: faker.Lorem.paragraphs(3),
-            date: (new Date(faker.Date.past(i))).yyyymmdd(),
-            category: faker.random.number(3) + 1,
+            date: (new Date(faker.Date.future(i))).yyyymmdd(),
+            category: faker.random.number(4) + 1,
             image: faker.Image.city() + '/' + faker.Lorem.words(1)
         });
     }
 
-    var findEventBySlug = function(slug) {
-        var title = slug.replace('-', ' ');
-        console.log('original title:', title);
+    var findEventById = function(id) {
+        id = parseInt(id);
         return events.filter(function(e) {
-            console.log(e.title);
-            return e.title === title;
+            return e.id === id;
         })[0];
     };
 
-    eventRouter.get('/', function (req, res) {
-        res.send({
-            'event': events
+    var findEventByTitle = function(title) {
+        return events.filter(function(e) {
+            return e.title.indexOf(title) + 1;
         });
+    };
+    var addEvent = function (data) {
+        var event = data.event;
+        event.id = ++i;
+        events.push(data.event);
+        return data;
+    };
+
+    eventRouter.get('/', function (req, res) {
+        if(typeof req.query.q !== 'undefined') {
+            res.send({
+                'event': findEventByTitle(req.query.q)
+            });
+        } else {
+            res.send({
+                'event': events
+            });
+        }
     });
 
     eventRouter.post('/', function (req, res) {
-        res.status(201).end();
+        res.send(addEvent(req.body)).status(201).end();
     });
 
-    eventRouter.get('/:slug', function (req, res) {
+    eventRouter.get('/:id', function (req, res) {
         res.send({
-            'event': findEventBySlug(req.params.slug)
+            'event': findEventById(req.params.id)
         });
     });
 
     eventRouter.put('/:id', function (req, res) {
-        res.send({
-            'event': {
-                id: req.params.id
-            }
-        });
+        res.send(req.body);
     });
 
     eventRouter.delete('/:id', function (req, res) {

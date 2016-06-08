@@ -1,15 +1,89 @@
-<ul>
-    {{#each events as |event|}}
-        {{#link-to 'event-details' event.slug}}
-            <div class="media">
-                <div class="media-left">
-                    <img class="media-object mo-image" src="{{event.image}}" alt="{{event.title}}">
-                </div>
-                <div class="media-body">
-                    <h4 class="media-heading" style={{event.titleStyles}}>{{event.title}}</h4>
-                    {{event.shortDescription}}
-                </div>
+<div class="jumbotron">
+    <h1>Traveller events!</h1>
+    <p>For example develop traveller event list. The event will have a master and detail page also events will have a
+        category.</p>
+    <p>
+        <button class="btn btn-primary btn-lg" role="button"{{action 'toggleEvent' 'eventForm'}}>Add event</button>
+    </p>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-xs-8">
+            {{#each eventsFiltered as |event|}}
+                {{#link-to 'event-details' event.id}}
+                    <div class="media">
+                        <div class="media-left">
+                            <img class="media-object mo-image" src="{{event.image}}" alt="{{event.title}}">
+                        </div>
+                        <div class="media-body">
+                            <h4 class="media-heading" style={{event.category.titleStyles}}>{{event.title}}</h4>
+                            <p class="text-muted">{{event.date}}</p>
+                            {{event.shortDescription}}
+                        </div>
+                    </div>
+                {{/link-to}}
+            {{/each}}
+        </div>
+        <div class="col-xs-4">
+            <div class="form-group">
+                {{input value=searchQuery keyUp=(action 'searchKeyUp') class="form-control"}}
             </div>
-        {{/link-to}}
-    {{/each}}
-</ul>
+            {{#each categories as |category i|}}
+                <label class="label-block">
+                    {{input type="checkbox" checked=(find-in activeCategories category.id) change=(action 'toggleCategory' category.id) }}
+                    <span class="color-tester" style={{category.titleStyles}}>{{category.title}}</span>
+                </label>
+            {{/each}}
+        </div>
+    </div>
+</div>
+
+{{#modal-window eventName="eventForm" modalTitle='Add event'}}
+    <form class="form-horizontal" {{action 'addEvent' on='submit'}}>
+        <div class="form-group {{if newEvent.validationErrors.title.length 'has-error'}}">
+            <label for="event-title" class="col-sm-2 control-label">Title</label>
+            <div class="col-sm-10">
+                {{input type="text" id="event-title" class="form-control" placeholder="Title" value=newEvent.title}}
+            </div>
+        </div>
+        <div class="form-group {{if newEvent.validationErrors.description.length 'has-error'}}">
+            <label for="event-description" class="col-sm-2 control-label">Description</label>
+            <div class="col-sm-10">
+                {{textarea id="event-description" class="form-control" rows=5 placeholder="Description" value=newEvent.description}}
+            </div>
+        </div>
+        <div class="form-group {{if newEvent.validationErrors.image.length 'has-error'}}">
+            <label for="event-image" class="col-sm-2 control-label">Image</label>
+            <div class="col-sm-10">
+                {{input type="text" id="event-image" class="form-control" placeholder="Image URL" value=newEvent.image}}
+            </div>
+        </div>
+        <div class="form-group {{if newEvent.validationErrors.date.length 'has-error'}}">
+            <label for="event-image" class="col-sm-2 control-label">Date</label>
+            <div class="col-sm-10">
+                {{input type="text" id="event-date" class="form-control" placeholder="Date" value=newEvent.date}}
+            </div>
+        </div>
+        <div class="form-group {{if newEvent.validationErrors.category.id.length 'has-error'}}">
+            <label for="event-image" class="col-sm-2 control-label">Category</label>
+            <div class="col-sm-10">
+                {{v-select
+                content=categories
+                optionValuePath="id"
+                optionLabelPath="title"
+                value=newEvent.category
+                changeAction='setCategory'
+                prompt='Select category'}}
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-3">
+                <button type="reset" class="btn btn-warning btn-block" {{action 'toggleEvent' 'eventFormOff'}}>Cancel
+                </button>
+            </div>
+            <div class="col-sm-offset-4 col-sm-3">
+                <button type="submit" class="btn btn-success btn-block">Add</button>
+            </div>
+        </div>
+    </form>
+{{/modal-window}}

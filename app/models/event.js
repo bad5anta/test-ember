@@ -1,9 +1,10 @@
 import DS from 'ember-data';
 import Ember from 'ember';
+import EmberValidations from 'ember-validations';
 
-export default DS.Model.extend({
+export default DS.Model.extend(EmberValidations, {
     title: DS.attr(),
-    description: DS.attr(),
+    description: DS.attr('string', {defaultValue: ''}),
     date: DS.attr(),
     image: DS.attr(),
 
@@ -17,10 +18,23 @@ export default DS.Model.extend({
         }
         return description.substr(0, firstPeriodPosition) + '...';
     }),
-    titleStyles: Ember.computed('category.color', function () {
-        return 'color:' + this.get('category.color');
-    }),
-    slug: Ember.computed('title', function() {
-        return this.get('title').dasherize();
-    })
+    
+    validationErrors: [],
+    validations: {
+        title: {
+            presence: true
+        },
+        description: {
+            presence: true
+        },
+        date: {
+            format: {with: /^\d{4}\-(0\d|1(1|2))\-((0|1|2)\d|3(0|1))$/, message: 'date in format yyyy-mm-dd'}
+        },
+        image: {
+            presence: true
+        },
+        'category.id' : {
+            presence: true
+        }
+    }
 });

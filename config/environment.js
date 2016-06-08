@@ -6,6 +6,7 @@ module.exports = function(environment) {
     environment: environment,
     baseURL: '/',
     locationType: 'auto',
+    weatherAPIURL: 'https://api.forecast.io/forecast/8159e18ef142dcffb7ba31d9e986b4ba/50.4021702,30.3926089,',
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
@@ -16,6 +17,16 @@ module.exports = function(environment) {
     APP: {
       // Here you can pass flags/options to your application instance
       // when it is created
+    },
+    contentSecurityPolicy: {
+      'default-src': "'self'",
+      'script-src': "'self'",
+      'font-src': "'self'",
+      'connect-src': "'self' https://api.forecast.io",
+      'img-src': "'self' http://lorempixel.com" ,
+      'style-src': "'self'",
+      'media-src': "'self'",
+      'frame-src': "'self'"
     }
   };
 

@@ -1,0 +1,27 @@
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <h1>Search results for: "{{q}}"</h1>
+            {{#each groupedEvents as |groupedEvent a|}}
+                {{log (concat 'grouped' a)}}
+                <h2>{{get-month-by-number groupedEvent.month}}</h2>
+                {{#each groupedEvent.events as |event b|}}
+                    {{log (concat 'inner' b)}}
+                    {{#link-to 'event-details' event.id}}
+                        <div class="media">
+                            <div class="media-left">
+                                <img class="media-object mo-image" src="{{event.image}}" alt="{{event.title}}">
+                            </div>
+                            <div class="media-body">
+                                <h4 class="media-heading" style={{event.category.titleStyles}}>{{event.title}}</h4>
+                                <p class="text-muted">{{event.date}}</p>
+                                {{event.shortDescription}}
+                            </div>
+                        </div>
+                    {{/link-to}}
+                {{/each}}
+                <hr>
+            {{/each}}
+        </div>
+    </div>
+</div>
